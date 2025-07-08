@@ -1,0 +1,97 @@
+/* .bg-custom {
+    background-color: #e5830c;
+    color: white;
+}
+
+.logoedomex {
+    height: 100%
+}
+
+.barra-bottom {
+    background-color: #a02444;
+    color: white;
+    padding-left: 100px;
+    padding-right: 60px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    max-width: 100%;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.footertexto {
+    font-size: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    margin-top: 10px;
+}
+
+/* navbar */
+/* 
+.navbar {
+    background-color: #eb984e;
+    padding-left: 100px;
+    padding-right: 60px;
+    padding-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    height: 50px;
+    max-width: 100%;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+}
+
+.logo {
+    height: 28px;
+}
+
+.user-info {
+    text-align: right;
+    font-size: 14px;
+    color: white;
+}
+
+.user-name {
+    font-weight: bold;
+    display: block;
+    color: white;
+}
+
+.dropdown-arrow {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.user-info {
+    text-align: right;
+    font-size: 14px;
+}
+
+.btn-etiqueta {
+    color: white;
+}
+
+.btn-etiqueta:hover {
+    color: white;
+    background-color: #f69f2f;
+}
+
+.nav-item1:hover {
+    background-color: wheat;
+} */

@@ -1,0 +1,80 @@
+#usuariosTable_filter input {
+    width: 80% !important;
+    max-width: 80%;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+#usuariosTable_filter {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* //// */
+
+/* Estilos generales */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+
+.container {
+    flex: 1;
+    margin-bottom: 60px;
+    padding: 20px;
+    padding-top: 40px;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 10px 0;
+    text-align: center;
+}
+
+#usuariosTable {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        margin-top: 60px;
+        margin-bottom: 50px;
+    }
+
+    .navbar {
+        padding: 10px;
+    }
+
+    footer {
+        padding: 5px 0;
+    }
+}
+
+.table thead th:nth-child(1) {
+    width: 20%;
+}
+
+
+.table thead th:nth-child(3) {
+    width: 25%;
+}
+
+.table tbody td {
+    vertical-align: middle;
+}
+
+
+.table thead th {
+    text-align: center;
+}

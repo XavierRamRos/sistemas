@@ -1,0 +1,28 @@
+/* Estilos generales */
+.card-header {
+
+    background-color: #eb984e;
+    color: white;
+}
+
+.custom-button {
+    background-color: #e5830c;
+    color: white;
+    font-size: 18px;
+}
+
+.custom-button:hover {
+    background-color: #a36519;
+    color: white;
+    font-size: 18px;
+}
+
+.card {
+
+    box-shadow:
+        -7px 0 10px rgba(0, 0, 0, 0.1),
+        /* Sombra izquierda */
+        7px 0 10px rgba(0, 0, 0, 0.1);
+    /* Sombra derecha */
+    border-radius: 10px;
+}

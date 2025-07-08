@@ -1,0 +1,144 @@
+body {
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 3rem;
+    font-size: 2rem;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+}
+
+.card {
+    width: 300px;
+    height: 300px;
+    background-color: #4c7760;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.icon {
+    width: 150px;
+    height: 150px;
+    margin-top: 20%;
+    margin-left: 5%;
+    justify-content: center;
+}
+
+.card-text {
+    background-color: rgba(0, 0, 0, 0.4);
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    margin-top: auto;
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.texto-recuadros {
+    color: white;
+    font-weight: bold;
+
+}
+
+.top-title {
+    margin-top: 75px;
+    font-size: 40px;
+    color: black;
+}
+
+.link-button {
+    background-color: #4c7760;
+}
+
+
+
+/* colores de las tarjetas */
+
+.agendarCita {
+    background-color: #095169;
+}
+
+.reagendarCita {
+    background-color: #a13333;
+}
+
+.consultarCita {
+    background-color: #4e395d;
+}
+
+.nuevoPaciente {
+    background-color: #5d7e62;
+}
+
+.buscarPaciente {
+    background-color: #575048;
+}
+
+.editarPaciente {
+    background-color: #16453f;
+}
+
+.validar {
+    background-color: #459a96;
+}
+
+.consultorio {
+    background-color: #8a1b45;
+}
+
+.disponibilidad {
+    background-color: #30318a;
+}
+
+.indicadores {
+    background-color: #727137;
+}
+
+.bloquear {
+    background-color: #575a65;
+}
+
+.edit_diagnostico {
+    background-color: #7b4774;
+}
+
+.habilitar_diagnostico {
+    background-color: #189498;
+}
+
+.hojaTrabajo {
+    background-color: #815B5B;
+}
+
+.bloquearHoras {
+    background-color: #5C7285;
+}
+
+.horarios {
+    background-color: #A97155;
+}
