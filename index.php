@@ -14,7 +14,7 @@
             <div class="logo">
                 <img src="img/UNEVE.png" alt="Logo" />
             </div>
-            <h1>INICIAR SESIÓN</h1>
+            <h1>INICIAR SESIÓN PRUEBA DE GIT</h1>
             <form id="loginForm" onsubmit="return handleLogin(event)">
                 <input type="text" id="num_empleado" placeholder="Número de Empleado" name="num_empleado" required />
                 <input type="password" id="contraseña" placeholder="Contraseña" name="contraseña" required />
