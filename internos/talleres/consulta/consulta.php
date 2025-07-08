@@ -64,14 +64,14 @@ require_once '../../../php/conexion.php';
 <div class="filtros-section">
     <form id="formFiltros">
         <div class="row align-items-center g-2">
-            <!-- Campo de búsqueda principal -->
-            <div class="col-sm-6 col-md-7">
+            <!-- Campo de búsqueda principal - ahora ocupa menos espacio -->
+            <div class="col-md-5 col-lg-5">
                 <input type="text" class="form-control" id="filtroBusqueda" name="filtroBusqueda" 
                        placeholder="Ingrese matrícula, nombre completo o número de teléfono">
             </div>
             
-            <!-- Select de talleres -->
-            <div class="col-sm-3 col-md-2">
+            <!-- Select de talleres - ajustado a un tamaño menor -->
+            <div class="col-md-2 col-lg-2">
                 <select class="form-select" id="filtroTaller" name="filtroTaller">
                     <option value="">TODOS LOS TALLERES</option>
                     <?php
@@ -84,17 +84,18 @@ require_once '../../../php/conexion.php';
                 </select>
             </div>
 
-            <div class="col-sm-3 col-md-2">
-    <select class="form-select" id="filtroEstado" name="filtroEstado">
-        <option value="">TODOS LOS ESTADOS</option>
-        <option value="1">ACTIVOS</option>
-        <option value="2">POR RENOVAR</option>
-        <option value="3">BAJA</option>
-    </select>
-</div>
+            <!-- Select de estado - ajustado a un tamaño menor -->
+            <div class="col-md-2 col-lg-2">
+                <select class="form-select" id="filtroEstado" name="filtroEstado">
+                    <option value="">TODOS LOS ESTADOS</option>
+                    <option value="1">ACTIVOS</option>
+                    <option value="2">POR RENOVAR</option>
+                    <option value="3">BAJA</option>
+                </select>
+            </div>
             
-            <!-- Botones -->
-            <div class="col-sm-3 col-md-2">
+            <!-- Botones - ahora ocupan solo el espacio necesario -->
+            <div class="col-md-3 col-lg-3">
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary flex-grow-1" id="btnBuscar">
                         <span id="searchText"><i class="bi bi-search"></i> Buscar</span>

@@ -144,8 +144,7 @@ class PDF extends Fpdi {
         // Arial italic 8
         $this->SetFont('Arial', 'I', 8);
         // Número de página (Página X/Y)
-        $this->Cell(350, 10, ''.$this->PageNo().'/'.$this->totalPages, 0, 0, 'C');
-    }
+        $this->Cell(350, 10, $this->PageNo().'/{nb}', 0, 0, 'C');    }
     
     function SetTotalPages($total) {
         $this->totalPages = $total;
@@ -204,10 +203,22 @@ foreach ($inscritos as $inscrito) {
     
     // Verificar si necesitamos nueva página (antes de dibujar la fila)
     if ($rowsInCurrentPage > 1 && ($startY + ($rowsInCurrentPage * $rowHeight) > $endY)) {
-        $pdf->AddPageWithoutHeader(); // Usamos el nuevo método para páginas adicionales
-        $pdf->SetFirstPage(false); // Indicar que no es la primera página
-        $startY = 30; // Posición más arriba para páginas siguientes
-        $rowsInCurrentPage = 1; // Resetear contador para la nueva página
+        // Dibujar bordes verticales para la página actual antes de crear una nueva
+        $initialY = $pdf->IsFirstPage() ? 73 : 30;
+        $finalY = $startY + (($rowsInCurrentPage - 1) * $rowHeight);
+        
+        $pdf->Line($leftMargin, $initialY, $leftMargin, $finalY);
+        $pdf->Line($rightMargin, $initialY, $rightMargin, $finalY);
+        
+        $columnDividers = [36.55, 56, 99.75, 143.5];
+        foreach ($columnDividers as $xPos) {
+            $pdf->Line($xPos, $initialY, $xPos, $finalY);
+        }
+        
+        $pdf->AddPageWithoutHeader();
+        $pdf->SetFirstPage(false);
+        $startY = 30;
+        $rowsInCurrentPage = 1;
         
         // Dibujar línea superior en la nueva página
         $pdf->Line($leftMargin, $startY, $rightMargin, $startY);
@@ -216,7 +227,7 @@ foreach ($inscritos as $inscrito) {
     $currentY = $startY + (($rowsInCurrentPage - 1) * $rowHeight);
     
     // # Consecutivo
-    $pdf->SetXY(27.5, $currentY);
+    $pdf->SetXY(28, $currentY);
     $pdf->Cell(10, $rowHeight, $contador, 0, 0, 'C');
     
     // Matrícula
@@ -244,7 +255,7 @@ foreach ($inscritos as $inscrito) {
 }
 
 // Dibujar bordes verticales para la última página
-$initialY = $pdf->IsFirstPage() ? 73 : 30; // Ajustar según si es primera página o no
+$initialY = $pdf->IsFirstPage() ? 73 : 30;
 $finalY = $startY + ($rowsInCurrentPage * $rowHeight);
 
 $pdf->Line($leftMargin, $initialY, $leftMargin, $finalY);
