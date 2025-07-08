@@ -1,10 +1,10 @@
 // // Variables para los gráficos
-// let inscritosTallerChart;
-// let sexoChart;
-// let horariosChart;
-// let periodoChart;
-// let tipoUsuarioChart;
-// let estadoInscripcionChart;
+let inscritosTallerChart;
+let sexoChart;
+let horariosChart;
+let periodoChart;
+let tipoUsuarioChart;
+let estadoInscripcionChart;
 
 // Variables para paginación
 let currentPage = 1;
