@@ -15,15 +15,30 @@ try {
     $fechaInicio = isset($_GET['fechaInicio']) ? $_GET['fechaInicio'] : '';
     $fechaFin = isset($_GET['fechaFin']) ? $_GET['fechaFin'] : '';
 
-    // Validar fechas
+//  // Validar que las fechas sean obligatorias
+//  if (empty($fechaInicio) || empty($fechaFin)) {
+//     throw new Exception("Las fechas de inicio y fin son requeridas");
+// }
+
+// Validar que la fecha de inicio no sea mayor a la fecha fin
+if (strtotime($fechaInicio) > strtotime($fechaFin)) {
+    throw new Exception("La fecha de inicio no puede ser mayor a la fecha de fin");
+}
+
+    // Determinar condición de fecha
     if (empty($fechaInicio) || empty($fechaFin)) {
-        $fechaInicio = date('Y-m-01');
-        $fechaFin = date('Y-m-t');
+        $fechaCondition = "1=1";
+        $params = [];
+        $types = "";
+    } else {
+        $fechaCondition = "ti.fecha_registro BETWEEN ? AND ?";
+        $params = [$fechaInicio, $fechaFin];
+        $types = "ss";
     }
 
     $response = [];
 
-    // 1. Estadísticas generales (corregido)
+    // 1. Estadísticas generales
     $sqlGeneral = "SELECT 
                     COUNT(*) as totalInscritos,
                     SUM(CASE WHEN ts.id_sexo = 1 THEN 1 ELSE 0 END) as totalHombres,
@@ -36,11 +51,8 @@ try {
                   LEFT JOIN tall_sexo ts ON ti.id_sexo = ts.id_sexo
                   LEFT JOIN tall_estado_taller te ON ti.id_estado = te.id_estado
                   LEFT JOIN tall_usuario_tipo tut ON ti.id_tipo = tut.id_tipo
-                  WHERE ti.fecha_registro BETWEEN ? AND ?";
+                  WHERE $fechaCondition";
     
-    $params = [$fechaInicio, $fechaFin];
-    $types = "ss";
-
     if ($taller > 0) {
         $sqlGeneral .= " AND ti.id_taller = ?";
         $params[] = $taller;
@@ -64,7 +76,10 @@ try {
         throw new Exception("Error en la preparación de consulta general: " . $conn->error);
     }
 
-    $stmtGeneral->bind_param($types, ...$params);
+    if (!empty($params)) {
+        $stmtGeneral->bind_param($types, ...$params);
+    }
+    
     $stmtGeneral->execute();
     $resultGeneral = $stmtGeneral->get_result();
     $rowGeneral = $resultGeneral->fetch_assoc();

@@ -116,7 +116,7 @@ require_once '../../../php/conexion.php';
                     <select id="estadoFiltro" class="form-select">
                         <option value="0">Todos</option>
                         <option value="1">Activos</option>
-                        <option value="2">De baja</option>
+                        <option value="3">De baja</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -128,18 +128,21 @@ require_once '../../../php/conexion.php';
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label for="fechaInicio" class="form-label">Fecha inicio</label>
-                    <input type="date" id="fechaInicio" class="form-control">
-                </div>
-                <div class="col-md-2">
-                    <label for="fechaFin" class="form-label">Fecha fin</label>
-                    <input type="date" id="fechaFin" class="form-control">
-                </div>
-                <div class="col-md-1 d-flex align-items-end">
-                    <button id="btnFiltrar" class="btn btn-primary w-100">
-                        <i class="bi bi-funnel"></i> Filtrar
-                    </button>
-                </div>
+    <label for="fechaInicio" class="form-label">Fecha inicio <span class="text-danger">*</span></label>
+    <input type="date" id="fechaInicio" class="form-control" required>
+</div>
+<div class="col-md-2">
+    <label for="fechaFin" class="form-label">Fecha fin <span class="text-danger">*</span></label>
+    <input type="date" id="fechaFin" class="form-control" required>
+</div>
+<div class="col-md-1 d-flex align-items-end">
+    <button id="btnFiltrar" class="btn btn-primary w-100 me-2">
+        <i class="bi bi-funnel"></i> Filtrar
+    </button>
+    <button id="btnResetFilters" class="btn btn-secondary w-100">
+        <i class="bi bi-arrow-counterclockwise"></i> Reestablecer
+    </button>
+</div>
             </div>
         </div>
         
@@ -273,7 +276,7 @@ require_once '../../../php/conexion.php';
                                 <div class="stat-label">Activos</div>
                             </div>
                             <div class="col-md-6">
-                                <div class="stat-number" id="totalBajas">0</div>
+                                <div class="stat-number" id="totalBajasEstado">0</div>
                                 <div class="stat-label">De baja</div>
                             </div>
                         </div>
@@ -282,65 +285,13 @@ require_once '../../../php/conexion.php';
             </div>
         </div>
         
-        <!-- Tabla de detalle -->
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Detalle de inscritos</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Taller</th>
-                                <th>Nombre</th>
-                                <th>Sexo</th>
-                                <th>Matrícula</th>
-                                <th>Carrera</th>
-                                <th>Horario</th>
-                                <th>Estado</th>
-                                <th>Fecha registro</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaInscritos">
-                            <!-- Los datos se cargarán aquí mediante AJAX -->
-                        </tbody>
-                    </table>
-                </div>
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center" id="paginacion">
-                        <!-- La paginación se generará aquí -->
-                    </ul>
-                </nav>
-            </div>
+        
         </div>
     </div>
 </div>
 
-<!-- Modal para exportar -->
-<div class="modal fade" id="exportarModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Exportar reporte</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label for="formatoExportar" class="form-label">Formato</label>
-                    <select id="formatoExportar" class="form-select">
-                        <option value="excel">Excel</option>
-                        <option value="pdf">PDF</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btnExportar">Exportar</button>
-            </div>
-        </div>
-    </div>
-</div>
+<br><br>
+
 
 <script src="js/estadisticas_talleres.js"></script>
 

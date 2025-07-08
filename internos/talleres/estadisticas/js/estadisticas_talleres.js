@@ -6,24 +6,23 @@ let periodoChart;
 let tipoUsuarioChart;
 let estadoInscripcionChart;
 
+// Variables para paginación
+let currentPage = 1;
+const itemsPerPage = 10;
+let totalItems = 0;
+
 document.addEventListener('DOMContentLoaded', function () {
-    // Inicializar flatpickr para las fechas
+    // Inicializar flatpickr para las fechas sin valores por defecto
     flatpickr("#fechaInicio", {
-        dateFormat: "Y-m-d",
-        defaultDate: new Date(new Date().setMonth(new Date().getMonth() - 1))
+        dateFormat: "Y-m-d"
     });
     
     flatpickr("#fechaFin", {
-        dateFormat: "Y-m-d",
-        defaultDate: new Date()
+        dateFormat: "Y-m-d"
     });
-
-    // Cargar datos iniciales
-    cargarEstadisticas();
 
     // Event listeners
     document.getElementById('btnFiltrar').addEventListener('click', cargarEstadisticas);
-    document.getElementById('btnExportar').addEventListener('click', exportarReporte);
 });
 
 function cargarEstadisticas() {
@@ -32,6 +31,28 @@ function cargarEstadisticas() {
     const sexo = document.getElementById('sexoFiltro').value;
     const fechaInicio = document.getElementById('fechaInicio').value;
     const fechaFin = document.getElementById('fechaFin').value;
+
+    // Validar que las fechas sean obligatorias
+    // if (!fechaInicio || !fechaFin) {
+    //     Swal.fire({
+    //         icon: 'error',
+    //         title: 'Fechas requeridas',
+    //         text: 'Debes seleccionar una fecha de inicio y una fecha de fin para filtrar los datos',
+    //         confirmButtonColor: '#3085d6',
+    //     });
+    //     return; // Detener la ejecución si no hay fechas
+    // }
+
+    // Validar que la fecha de inicio no sea mayor a la fecha fin
+    if (new Date(fechaInicio) > new Date(fechaFin)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Rango de fechas inválido',
+            text: 'La fecha de inicio no puede ser mayor a la fecha de fin',
+            confirmButtonColor: '#3085d6',
+        });
+        return;
+    }
 
     // Mostrar loading
     Swal.fire({
@@ -57,6 +78,7 @@ function cargarEstadisticas() {
             document.getElementById('totalHombres').textContent = data.totalHombres || 0;
             document.getElementById('totalMujeres').textContent = data.totalMujeres || 0;
             document.getElementById('totalBajas').textContent = data.totalBajas || 0;
+            document.getElementById('totalBajasEstado').textContent = data.totalBajas || 0;
             document.getElementById('totalActivos').textContent = data.totalActivos || 0;
             document.getElementById('totalInternos').textContent = data.totalInternos || 0;
             document.getElementById('totalExternos').textContent = data.totalExternos || 0;
@@ -231,101 +253,18 @@ function actualizarGraficos(data) {
     });
 }
 
-function actualizarTablaInscritos(inscritos) {
-    const tabla = document.getElementById('tablaInscritos');
-    tabla.innerHTML = '';
+// Event listener para el botón de reestablecer filtros
+document.getElementById('btnResetFilters').addEventListener('click', resetearFiltros);
 
-    // Calcular índices para la paginación
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, inscritos.length);
-
-    for (let i = startIndex; i < endIndex; i++) {
-        const inscrito = inscritos[i];
-        const row = document.createElement('tr');
-        
-        row.innerHTML = `
-            <td>${inscrito.nombre_taller}</td>
-            <td>${inscrito.nombre} ${inscrito.paterno} ${inscrito.materno}</td>
-            <td>${inscrito.sexo}</td>
-            <td>${inscrito.matricula || 'N/A'}</td>
-            <td>${inscrito.carrera || 'N/A'}</td>
-            <td>${inscrito.horario || 'N/A'}</td>
-            <td><span class="badge ${inscrito.estado === 'Activo' ? 'bg-success' : 'bg-danger'}">${inscrito.estado}</span></td>
-            <td>${inscrito.fecha_registro}</td>
-        `;
-        
-        tabla.appendChild(row);
-    }
-}
-
-function actualizarPaginacion() {
-    const paginacion = document.getElementById('paginacion');
-    paginacion.innerHTML = '';
-
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    // Botón Anterior
-    const liPrev = document.createElement('li');
-    liPrev.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-    liPrev.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
-    liPrev.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (currentPage > 1) {
-            currentPage--;
-            cargarEstadisticas();
-        }
-    });
-    paginacion.appendChild(liPrev);
-
-    // Números de página
-    for (let i = 1; i <= totalPages; i++) {
-        const li = document.createElement('li');
-        li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-        li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-        li.addEventListener('click', (e) => {
-            e.preventDefault();
-            currentPage = i;
-            cargarEstadisticas();
-        });
-        paginacion.appendChild(li);
-    }
-
-    // Botón Siguiente
-    const liNext = document.createElement('li');
-    liNext.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-    liNext.innerHTML = `<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
-    liNext.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (currentPage < totalPages) {
-            currentPage++;
-            cargarEstadisticas();
-        }
-    });
-    paginacion.appendChild(liNext);
-}
-
-function exportarReporte() {
-    const formato = document.getElementById('formatoExportar').value;
-    const taller = document.getElementById('tallerFiltro').value;
-    const estado = document.getElementById('estadoFiltro').value;
-    const sexo = document.getElementById('sexoFiltro').value;
-    const fechaInicio = document.getElementById('fechaInicio').value;
-    const fechaFin = document.getElementById('fechaFin').value;
-
-    // Mostrar loading
-    Swal.fire({
-        title: 'Generando reporte',
-        html: 'Por favor espere...',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
-
-    // Redirigir a la página de exportación
-    window.location.href = `php/exportar_estadisticas.php?formato=${formato}&taller=${taller}&estado=${estado}&sexo=${sexo}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
+// Función para resetear todos los filtros
+function resetearFiltros() {
+    // Restablecer los selectores a sus valores por defecto
+    document.getElementById('tallerFiltro').value = '0'; // Todos los talleres
+    document.getElementById('estadoFiltro').value = '0'; // Todos
+    document.getElementById('sexoFiltro').value = '0'; // Todos
     
-    // Cerrar el modal y el loading (aunque la redirección lo hará)
-    $('#exportarModal').modal('hide');
-    Swal.close();
+    // Limpiar los campos de fecha
+    document.getElementById('fechaInicio').value = '';
+    document.getElementById('fechaFin').value = '';
+   
 }
