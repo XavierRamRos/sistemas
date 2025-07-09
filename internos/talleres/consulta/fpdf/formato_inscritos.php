@@ -15,9 +15,13 @@ if ($conn->connect_error) {
 $tallerId = isset($_GET['taller']) ? intval($_GET['taller']) : 0;
 $busqueda = isset($_GET['busqueda']) ? $_GET['busqueda'] : '';
 $estado = isset($_GET['estado']) ? intval($_GET['estado']) : 0;
+$tipo = isset($_GET['tipo']) ? intval($_GET['tipo']) : 0; // Nuevo parámetro para tipo
 
 // 1. Obtener información del taller (si se especificó)
-$nombreTaller = "Todos";
+$nombreTaller = "Todos los talleres";
+$estadoFiltro = "Todos los estados";
+$tipoFiltro = "Todos los tipos";
+
 if ($tallerId > 0) {
     $queryTaller = "SELECT nombre FROM tall_talleres WHERE id_taller = ?";
     $stmtTaller = $conn->prepare($queryTaller);
@@ -30,31 +34,49 @@ if ($tallerId > 0) {
     }
 }
 
-// 2. Obtener inscritos internos (tipo 1)
-$queryInternos = "SELECT 
-                    i.id_inscrito, 
-                    i.matricula, 
-                    i.nombre, 
-                    i.paterno, 
-                    i.materno,
-                    'INTERNO' AS tipo
-                FROM tall_inscritos i
-                JOIN tall_talleres t ON i.id_taller = t.id_taller
-                WHERE i.id_tipo = 1"; // Internos
+// Obtener nombre del estado si se filtró
+if ($estado > 0) {
+    $queryEstado = "SELECT nombre FROM tall_estado_taller WHERE id_estado = ?";
+    $stmtEstado = $conn->prepare($queryEstado);
+    if (!$stmtEstado) die("Error preparando consulta de estado: " . $conn->error);
+    $stmtEstado->bind_param("i", $estado);
+    if (!$stmtEstado->execute()) die("Error ejecutando consulta de estado: " . $stmtEstado->error);
+    $resultEstado = $stmtEstado->get_result();
+    if ($resultEstado->num_rows > 0) {
+        $estadoFiltro = $resultEstado->fetch_assoc()['nombre'];
+    }
+}
 
-// 3. Obtener inscritos externos (tipo 2)
-$queryExternos = "SELECT 
-                    i.id_inscrito, 
-                    'EXTERNO' AS matricula, 
-                    i.nombre, 
-                    i.paterno, 
-                    i.materno,
-                    'EXTERNO' AS tipo
-                FROM tall_inscritos i
-                JOIN tall_talleres t ON i.id_taller = t.id_taller
-                WHERE i.id_tipo = 2"; // Externos
+// Obtener nombre del tipo si se filtró
+if ($tipo > 0) {
+    $queryTipo = "SELECT nombre FROM tall_usuario_tipo WHERE id_tipo = ?";
+    $stmtTipo = $conn->prepare($queryTipo);
+    if (!$stmtTipo) die("Error preparando consulta de tipo: " . $conn->error);
+    $stmtTipo->bind_param("i", $tipo);
+    if (!$stmtTipo->execute()) die("Error ejecutando consulta de tipo: " . $stmtTipo->error);
+    $resultTipo = $stmtTipo->get_result();
+    if ($resultTipo->num_rows > 0) {
+        $tipoFiltro = $resultTipo->fetch_assoc()['nombre'];
+    } else {
+        $tipoFiltro = ($tipo == 1) ? "INTERNOS" : "EXTERNOS";
+    }
+}
 
-// Aplicar filtros comunes
+// Consulta unificada para obtener todos los inscritos con sus tipos
+$query = "SELECT 
+            i.id_inscrito, 
+            IF(i.id_tipo = 1, i.matricula, 'EXTERNO') AS matricula,
+            i.nombre, 
+            i.paterno, 
+            i.materno,
+            IF(i.id_tipo = 1, 'INTERNO', 'EXTERNO') AS tipo,
+            et.nombre AS estado
+          FROM tall_inscritos i
+          JOIN tall_talleres t ON i.id_taller = t.id_taller
+          LEFT JOIN tall_estado_taller et ON i.id_estado = et.id_estado
+          WHERE 1=1";
+
+// Aplicar filtros
 $whereCommon = "";
 $params = [];
 $types = "";
@@ -80,42 +102,50 @@ if ($estado > 0) {
     $types .= "i";
 }
 
-$orderBy = " ORDER BY i.fecha_registro DESC";
-
-// Preparar consultas con filtros
-$queryInternos .= $whereCommon . $orderBy;
-$queryExternos .= $whereCommon . $orderBy;
-
-// Ejecutar consulta para internos
-$stmtInternos = $conn->prepare($queryInternos);
-if (!$stmtInternos) die("Error preparando consulta de internos: " . $conn->error);
-
-if (!empty($params)) {
-    $stmtInternos->bind_param($types, ...$params);
+// Nuevo filtro por tipo de usuario
+if ($tipo > 0) {
+    $whereCommon .= " AND i.id_tipo = ?";
+    $params[] = $tipo;
+    $types .= "i";
 }
 
-if (!$stmtInternos->execute()) die("Error ejecutando consulta de internos: " . $stmtInternos->error);
-$internos = $stmtInternos->get_result()->fetch_all(MYSQLI_ASSOC);
+$orderBy = " ORDER BY i.id_tipo ASC, i.fecha_registro DESC";
 
-// Ejecutar consulta para externos
-$stmtExternos = $conn->prepare($queryExternos);
-if (!$stmtExternos) die("Error preparando consulta de externos: " . $conn->error);
+// Preparar consulta final
+$query .= $whereCommon . $orderBy;
+
+// Ejecutar consulta
+$stmt = $conn->prepare($query);
+if (!$stmt) die("Error preparando consulta: " . $conn->error);
 
 if (!empty($params)) {
-    $stmtExternos->bind_param($types, ...$params);
+    $stmt->bind_param($types, ...$params);
 }
 
-if (!$stmtExternos->execute()) die("Error ejecutando consulta de externos: " . $stmtExternos->error);
-$externos = $stmtExternos->get_result()->fetch_all(MYSQLI_ASSOC);
-
-// Combinar resultados (primero internos, luego externos)
-$inscritos = array_merge($internos, $externos);
+if (!$stmt->execute()) die("Error ejecutando consulta: " . $stmt->error);
+$inscritos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 // Crear PDF usando el formato base
 class PDF extends Fpdi {
     protected $totalPages = 0;
     protected $isFirstPage = true;
     protected $skipHeader = false;
+    protected $taller = "";
+    protected $estado = "";
+    protected $tipo = "";
+    
+    // Métodos públicos para establecer los valores
+    public function setTaller($taller) {
+        $this->taller = $taller;
+    }
+    
+    public function setEstado($estado) {
+        $this->estado = $estado;
+    }
+    
+    public function setTipo($tipo) {
+        $this->tipo = $tipo;
+    }
     
     function Header() {
         if ($this->skipHeader) {
@@ -130,11 +160,11 @@ class PDF extends Fpdi {
             $this->useTemplate($tplIdx, 0, 0, $this->GetPageWidth(), $this->GetPageHeight());
             
             // Escribir el nombre del taller si está definido
-            if (isset($this->taller)) {
-                $this->SetFont('Arial', '', 10);
-                $this->SetXY(41, 57.25);
-                $this->Cell(0, 10, utf8_decode($this->taller), 0, 1, 'L');
-            }
+            $this->SetFont('Arial', '', 10);
+            
+            // Taller
+            $this->SetXY(41, 57.25);
+            $this->Cell(0, 10, utf8_decode($this->taller), 0, 1, 'L');
         }
     }
     
@@ -144,7 +174,8 @@ class PDF extends Fpdi {
         // Arial italic 8
         $this->SetFont('Arial', 'I', 8);
         // Número de página (Página X/Y)
-        $this->Cell(350, 10, $this->PageNo().'/{nb}', 0, 0, 'C');    }
+        $this->Cell(350, 10, $this->PageNo().'/{nb}', 0, 0, 'C');
+    }
     
     function SetTotalPages($total) {
         $this->totalPages = $total;
@@ -169,7 +200,11 @@ class PDF extends Fpdi {
 // Crear instancia PDF
 $pdf = new PDF('P');
 $pdf->AliasNbPages();
-$pdf->taller = $nombreTaller;
+
+// Usar los métodos setters para establecer los valores
+$pdf->setTaller($nombreTaller);
+$pdf->setEstado($estadoFiltro);
+$pdf->setTipo($tipoFiltro);
 
 // Calcular número total de páginas necesarias
 $rowsPerPage = floor((250 - 73) / 4.5); // Altura disponible / altura de fila
@@ -195,7 +230,6 @@ $pdf->Line($leftMargin, $startY, $rightMargin, $startY);
 
 $contador = 0;
 $rowsInCurrentPage = 0;
-
 
 foreach ($inscritos as $inscrito) {
     $contador++;
@@ -267,7 +301,11 @@ foreach ($columnDividers as $xPos) {
 }
 
 // Nombre del archivo PDF
-$nombreArchivo = 'Listado_Inscritos_' . ($tallerId > 0 ? str_replace(' ', '_', $nombreTaller) . '_' : '') . date('d-m-Y') . '.pdf';
+$nombreArchivo = 'Listado_Inscritos_' . 
+                ($tallerId > 0 ? str_replace(' ', '_', $nombreTaller) . '_' : '') . 
+                ($estado > 0 ? 'Estado_' . str_replace(' ', '_', $estadoFiltro) . '_' : '') . 
+                ($tipo > 0 ? 'Tipo_' . str_replace(' ', '_', $tipoFiltro) . '_' : '') . 
+                date('d-m-Y') . '.pdf';
 
 // Salida del PDF
 $pdf->Output('I', $nombreArchivo);

@@ -10,6 +10,7 @@ require_once '../../../../php/conexion.php';
 $busqueda = isset($_GET['busqueda']) ? trim($_GET['busqueda']) : '';
 $taller = isset($_GET['taller']) ? intval($_GET['taller']) : 0;
 $estado = isset($_GET['estado']) ? intval($_GET['estado']) : 0;
+$tipo = isset($_GET['tipo']) ? intval($_GET['tipo']) : 0; // Nuevo filtro
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $perPage = 25;
 $offset = ($page - 1) * $perPage;
@@ -52,6 +53,12 @@ if ($taller > 0) {
 if ($estado > 0) {
     $sql .= " AND i.id_estado = ?";
     $params[] = $estado;
+}
+
+// Nuevo filtro por tipo de usuario
+if ($tipo > 0) {
+    $sql .= " AND i.id_tipo = ?";
+    $params[] = $tipo;
 }
 
 $sql .= " ORDER BY i.fecha_registro DESC LIMIT ? OFFSET ?";

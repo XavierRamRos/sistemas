@@ -60,18 +60,18 @@ require_once '../../../php/conexion.php';
         
 <!-- Contenedor principal -->
 <div class="consulta-container">
-    <!-- Sección de filtros -->
+   <!-- Sección de filtros -->
 <div class="filtros-section">
     <form id="formFiltros">
-        <div class="row align-items-center g-2">
-            <!-- Campo de búsqueda principal - ahora ocupa menos espacio -->
-            <div class="col-md-5 col-lg-5">
-                <input type="text" class="form-control" id="filtroBusqueda" name="filtroBusqueda" 
-                       placeholder="Ingrese matrícula, nombre completo o número de teléfono">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <!-- Campo de búsqueda -->
+            <div class="flex-grow-1" style="min-width: 220px;">
+                <input type="text" class="form-control" id="filtroBusqueda" name="filtroBusqueda"
+                    placeholder="Ingrese matrícula, nombre completo o número de teléfono">
             </div>
-            
-            <!-- Select de talleres - ajustado a un tamaño menor -->
-            <div class="col-md-2 col-lg-2">
+
+            <!-- Select de talleres -->
+            <div style="min-width: 180px;">
                 <select class="form-select" id="filtroTaller" name="filtroTaller">
                     <option value="">TODOS LOS TALLERES</option>
                     <?php
@@ -84,34 +84,41 @@ require_once '../../../php/conexion.php';
                 </select>
             </div>
 
-            <!-- Select de estado - ajustado a un tamaño menor -->
-            <div class="col-md-2 col-lg-2">
+            <!-- Select de estado -->
+            <div style="min-width: 150px;">
                 <select class="form-select" id="filtroEstado" name="filtroEstado">
                     <option value="">TODOS LOS ESTADOS</option>
                     <option value="1">ACTIVOS</option>
-                    <option value="2">POR RENOVAR</option>
                     <option value="3">BAJA</option>
                 </select>
             </div>
-            
-            <!-- Botones - ahora ocupan solo el espacio necesario -->
-            <div class="col-md-3 col-lg-3">
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary flex-grow-1" id="btnBuscar">
-                        <span id="searchText"><i class="bi bi-search"></i> Buscar</span>
-                        <span id="searchLoading" class="d-none">
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            Buscando...
-                        </span>
-                    </button>
-                    <button type="button" id="btnLimpiar" class="btn btn-secondary flex-grow-1">
-                        <i class="bi bi-eraser"></i> Limpiar
-                    </button>
-                </div>
+
+            <!-- Select de tipo -->
+            <div style="min-width: 150px;">
+                <select class="form-select" id="filtroTipo" name="filtroTipo">
+                    <option value="">TODOS LOS TIPOS</option>
+                    <option value="1">INTERNOS</option>
+                    <option value="2">EXTERNOS</option>
+                </select>
+            </div>
+
+            <!-- Botones -->
+            <div class="d-flex gap-2" style="min-width: 240px;">
+                <button type="submit" class="btn btn-primary w-100" id="btnBuscar">
+                    <span id="searchText"><i class="bi bi-search"></i> Buscar</span>
+                    <span id="searchLoading" class="d-none">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Buscando...
+                    </span>
+                </button>
+                <button type="button" id="btnLimpiar" class="btn btn-secondary w-100">
+                    <i class="bi bi-eraser"></i> Limpiar
+                </button>
             </div>
         </div>
     </form>
 </div>
+
             
             <!-- Botón para generar PDF -->
             <div class="row mt-3">

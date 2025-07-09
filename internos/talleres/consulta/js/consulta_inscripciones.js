@@ -49,17 +49,17 @@ $(document).ready(function () {
 
     // Limpiar filtros
     $('#btnLimpiar').click(function () {
-    $('#formFiltros')[0].reset();
-    currentPage = 1;
-    hasSearched = false;
-
-    $('#tablaInscripciones').html(`
-        <tr>
-            <td colspan="7" class="text-center text-muted">Ingrese criterios de búsqueda y presione "Buscar"</td>
-        </tr>
-    `);
-    $('#pagination').empty();
-});
+        $('#formFiltros')[0].reset();
+        currentPage = 1;
+        hasSearched = false;
+    
+        $('#tablaInscripciones').html(`
+            <tr>
+                <td colspan="7" class="text-center text-muted">Ingrese criterios de búsqueda y presione "Buscar"</td>
+            </tr>
+        `);
+        $('#pagination').empty();
+    });
 
     // Función para cargar inscripciones
 function cargarInscripciones(page = 1) {
@@ -68,7 +68,8 @@ function cargarInscripciones(page = 1) {
     const filtros = {
         busqueda: $('#filtroBusqueda').val(),
         taller: $('#filtroTaller').val(),
-        estado: $('#filtroEstado').val(), // Nuevo filtro
+        estado: $('#filtroEstado').val(),
+        tipo: $('#filtroTipo').val(), // Nuevo filtro
         page: page,
         per_page: itemsPerPage
     };
@@ -411,13 +412,14 @@ $(document).on('click', '#btnCancelarInscripcion', function() {
     });
 });
 
-// Agregar al final del documento ready, después de todo el código existente
+// En el evento click del botón #btnGenerarPDF
 $(document).on('click', '#btnGenerarPDF', function() {
     // Obtener los filtros actuales
     const filtros = {
         taller: $('#filtroTaller').val(),
         busqueda: $('#filtroBusqueda').val(),
-        estado: $('#filtroEstado').val()
+        estado: $('#filtroEstado').val(),
+        tipo: $('#filtroTipo').val() // Nuevo parámetro
     };
 
     // Mostrar loading
@@ -425,13 +427,14 @@ $(document).on('click', '#btnGenerarPDF', function() {
     btnPDF.prop('disabled', true);
     btnPDF.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando...');
 
-    // Construir URL para el PDF (corregida la ruta)
+    // Construir URL para el PDF
     let url = 'fpdf/formato_inscritos.php?';
     
     // Solo agregar parámetros si tienen valor
     if (filtros.taller) url += `taller=${filtros.taller}&`;
     if (filtros.busqueda) url += `busqueda=${encodeURIComponent(filtros.busqueda)}&`;
-    if (filtros.estado) url += `estado=${filtros.estado}`;
+    if (filtros.estado) url += `estado=${filtros.estado}&`;
+    if (filtros.tipo) url += `tipo=${filtros.tipo}&`;
     
     // Eliminar el último & si existe
     if (url.endsWith('&')) {
