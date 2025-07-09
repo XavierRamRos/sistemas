@@ -59,6 +59,9 @@ require_once '../../../php/conexion.php';
             max-height: 500px;
             overflow-y: auto;
         }
+        .bg-fondo  {
+            background: #a02444;
+        }
     </style>
 </head>
 
@@ -95,54 +98,61 @@ require_once '../../../php/conexion.php';
             <h2 class="text-center">ESTADÍSTICAS DE TALLERES</h2>
         </div>
         
-        <!-- Filtros -->
-        <div class="filter-container">
-            <div class="row">
-                <div class="col-md-3">
-                    <label for="tallerFiltro" class="form-label">Taller</label>
-                    <select id="tallerFiltro" class="form-select">
-                        <option value="0">Todos los talleres</option>
-                        <?php
-                        $query = "SELECT id_taller, nombre FROM tall_talleres";
-                        $result = $conn->query($query);
-                        while ($row = $result->fetch_assoc()) {
-                            echo '<option value="'.$row['id_taller'].'">'.$row['nombre'].'</option>';
-                        }
-                        ?>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="estadoFiltro" class="form-label">Estado</label>
-                    <select id="estadoFiltro" class="form-select">
-                        <option value="0">Todos</option>
-                        <option value="1">Activos</option>
-                        <option value="3">De baja</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="sexoFiltro" class="form-label">Sexo</label>
-                    <select id="sexoFiltro" class="form-select">
-                        <option value="0">Todos</option>
-                        <option value="1">Hombre</option>
-                        <option value="2">Mujer</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-    <label for="fechaInicio" class="form-label">Fecha inicio <span class="text-danger">*</span></label>
-    <input type="date" id="fechaInicio" class="form-control" required>
-</div>
-<div class="col-md-2">
-    <label for="fechaFin" class="form-label">Fecha fin <span class="text-danger">*</span></label>
-    <input type="date" id="fechaFin" class="form-control" required>
-</div>
-<div class="col-md-1 d-flex align-items-end">
-    <button id="btnFiltrar" class="btn btn-primary w-100 me-2">
-        <i class="bi bi-funnel"></i> Filtrar
-    </button>
-    <button id="btnResetFilters" class="btn btn-secondary w-100">
-        <i class="bi bi-arrow-counterclockwise"></i> Reestablecer
-    </button>
-</div>
+<!-- Filtros -->
+<div class="filter-container container-fluid">
+    <div class="row g-2 align-items-end">
+
+        <div class="col-lg-3 col-md-6">
+            <label for="tallerFiltro" class="form-label">Taller</label>
+            <select id="tallerFiltro" class="form-select">
+                <option value="0">Todos los talleres</option>
+                <?php
+                $query = "SELECT id_taller, nombre FROM tall_talleres";
+                $result = $conn->query($query);
+                while ($row = $result->fetch_assoc()) {
+                    echo '<option value="'.$row['id_taller'].'">'.$row['nombre'].'</option>';
+                }
+                ?>
+            </select>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <label for="estadoFiltro" class="form-label">Estado</label>
+            <select id="estadoFiltro" class="form-select">
+                <option value="0">Todos</option>
+                <option value="1">Activos</option>
+                <option value="3">De baja</option>
+            </select>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <label for="sexoFiltro" class="form-label">Sexo</label>
+            <select id="sexoFiltro" class="form-select">
+                <option value="0">Todos</option>
+                <option value="1">Hombre</option>
+                <option value="2">Mujer</option>
+            </select>
+        </div>
+
+        <div class="col-lg-2 col-md-6">
+            <label for="fechaInicio" class="form-label">Fecha inicio <span class="text-danger">*</span></label>
+            <input type="date" id="fechaInicio" class="form-control" required>
+        </div>
+
+        <div class="col-lg-2 col-md-6">
+            <label for="fechaFin" class="form-label">Fecha fin <span class="text-danger">*</span></label>
+            <input type="date" id="fechaFin" class="form-control" required>
+        </div>
+
+        <div class="col-lg-1 d-flex gap-2">
+            <button id="btnFiltrar" class="btn btn-primary w-100">
+                <i class="bi bi-funnel"></i>
+            </button>
+            <button id="btnResetFilters" class="btn btn-secondary w-100">
+                <i class="bi bi-arrow-counterclockwise"></i>
+            </button>
+        </div>
+
             </div>
         </div>
         
@@ -182,66 +192,12 @@ require_once '../../../php/conexion.php';
             </div>
         </div>
         
-          <!-- Gráficos -->
-          <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Inscritos por taller</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-container">
-                            <canvas id="inscritosTallerChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Distribución por sexo</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-container">
-                            <canvas id="sexoChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Horarios más frecuentes</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-container">
-                            <canvas id="horariosChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Inscritos por periodo</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-container">
-                            <canvas id="periodoChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Nuevas secciones de Externos/Internos y Activos/De baja -->
-        <div class="row mb-4">
+<!-- Nuevas secciones de Externos/Internos y Activos/De baja -->
+<div class="row mb-4">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-fondo text-white">
                         <h5 class="mb-0">Tipo de usuario</h5>
                     </div>
                     <div class="card-body">
@@ -263,7 +219,7 @@ require_once '../../../php/conexion.php';
             </div>
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-fondo text-white">
                         <h5 class="mb-0">Estado de inscripción</h5>
                     </div>
                     <div class="card-body">
@@ -284,8 +240,62 @@ require_once '../../../php/conexion.php';
                 </div>
             </div>
         </div>
+
+
+          <!-- Gráficos -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-fondo text-white">
+                        <h5 class="mb-0">Inscritos por taller</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="inscritosTallerChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-fondo text-white">
+                        <h5 class="mb-0">Distribución por sexo</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="sexoChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
-        
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-fondo text-white">
+                            <h5 class="mb-0">Horarios más frecuentes</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="horariosChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-fondo text-white">
+                            <h5 class="mb-0">Inscritos por periodo</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="periodoChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

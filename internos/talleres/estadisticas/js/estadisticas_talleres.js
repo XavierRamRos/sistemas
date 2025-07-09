@@ -207,12 +207,12 @@ function actualizarGraficos(data) {
     tipoUsuarioChart = new Chart(ctxTipoUsuario, {
         type: 'doughnut',
         data: {
-            labels: ['Internos', 'Externos'],
+            labels: ['Externos', 'Internos'],
             datasets: [{
-                data: [data.totalInternos || 0, data.totalExternos || 0],
+                data: [data.totalExternos || 0, data.totalInternos || 0],
                 backgroundColor: [
                     '#17a2b8', // Turquesa para internos
-                    '#6c757d'  // Gris para externos
+                    '#eb984e'  // Gris para externos
                 ]
             }]
         },
