@@ -60,7 +60,13 @@ if ($tipo > 0) {
     $types .= "i";
 }
 
-$query .= " ORDER BY t.nombre, i.fecha_registro DESC";
+// Modificar la cláusula ORDER BY para que los de estado BAJA (3) aparezcan al final
+$query .= " ORDER BY 
+            CASE WHEN i.id_estado = 3 THEN 1 ELSE 0 END,  
+            t.nombre,                                     
+            i.fecha_registro DESC,                       
+            i.id_tipo ASC,                                
+            i.id_estado DESC";                            
 
 // Preparar consulta
 $stmt = $conn->prepare($query);
