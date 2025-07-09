@@ -419,7 +419,7 @@ $(document).on('click', '#btnGenerarPDF', function() {
         taller: $('#filtroTaller').val(),
         busqueda: $('#filtroBusqueda').val(),
         estado: $('#filtroEstado').val(),
-        tipo: $('#filtroTipo').val() // Nuevo parámetro
+        tipo: $('#filtroTipo').val()
     };
 
     // Mostrar loading
@@ -427,8 +427,13 @@ $(document).on('click', '#btnGenerarPDF', function() {
     btnPDF.prop('disabled', true);
     btnPDF.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando...');
 
+    // Determinar qué formato usar
+    const usarFormatoSimplificado = !filtros.taller; // Si no hay filtro de taller
+    
     // Construir URL para el PDF
-    let url = 'fpdf/formato_inscritos.php?';
+    let url = usarFormatoSimplificado 
+        ? 'fpdf/formato2_inscritos.php?' 
+        : 'fpdf/formato_inscritos.php?';
     
     // Solo agregar parámetros si tienen valor
     if (filtros.taller) url += `taller=${filtros.taller}&`;
