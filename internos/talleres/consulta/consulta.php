@@ -6,6 +6,8 @@ if (!isset($_SESSION['id_usuario'])) {
 }
 
 require_once '../../../php/conexion.php';
+require_once '../../php/config_permisos.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +15,7 @@ require_once '../../../php/conexion.php';
 
 <head>
     <meta charset="UTF-8">
-    <title>INSCRITOS A TALLERES</title>
+    <title>CONSULTA INSCRITOS A TALLERES</title>
     <!-- Cargar jQuery PRIMERO -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,6 +26,7 @@ require_once '../../../php/conexion.php';
     <link rel="stylesheet" href="css/style.css">
     <link rel="shortcut icon" href="../../../img/UNEVE.png">
 </head>
+<?php include '../../php/sidebar.php'; ?>
 
 <body data-role="<?php echo $_SESSION['id_tipo_usuario']; ?>" class="bg-light">
 
@@ -41,8 +44,8 @@ require_once '../../../php/conexion.php';
                 <div class="dropdown">
                     <button class="btn btn-etiqueta dropdown-toggle" type="button" id="dropdownMenuButton1"
                         data-bs-toggle="dropdown" aria-expanded="false">
-                        <?php echo $_SESSION['nombre_completo']; ?><i
-                            class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
+                        <?php echo $_SESSION['nombre'] . ' ' . $_SESSION['apellido_paterno']; ?>
+                        <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <li><a class="dropdown-item" href="../../../php/logout.php">Cerrar Sesión</a></li>
@@ -55,70 +58,69 @@ require_once '../../../php/conexion.php';
     <!-- Encabezado -->
     <div class="container">
         <div class="ticket-header">
-            <h2 class="text-center">INSCRITOS A TALLERES</h2>
+            <h2 class="text-center">CONSULTA INSCRITOS A TALLERES</h2>
         </div>
         
-<!-- Contenedor principal -->
-<div class="consulta-container">
-   <!-- Sección de filtros -->
-<div class="filtros-section">
-    <form id="formFiltros">
-        <div class="d-flex flex-wrap align-items-center gap-2">
-            <!-- Campo de búsqueda -->
-            <div class="flex-grow-1" style="min-width: 220px;">
-                <input type="text" class="form-control" id="filtroBusqueda" name="filtroBusqueda"
-                    placeholder="Ingrese matrícula, nombre completo o número de teléfono">
-            </div>
+        <!-- Contenedor principal -->
+        <div class="consulta-container">
+            <!-- Sección de filtros -->
+            <div class="filtros-section">
+                <form id="formFiltros">
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <!-- Campo de búsqueda -->
+                        <div class="flex-grow-1" style="min-width: 220px;">
+                            <input type="text" class="form-control" id="filtroBusqueda" name="filtroBusqueda"
+                                placeholder="Ingrese matrícula, nombre completo o número de teléfono">
+                        </div>
 
-            <!-- Select de talleres -->
-            <div style="min-width: 180px;">
-                <select class="form-select" id="filtroTaller" name="filtroTaller">
-                    <option value="">TODOS LOS TALLERES</option>
-                    <?php
-                    $query = "SELECT id_taller, nombre FROM tall_talleres";
-                    $result = $conn->query($query);
-                    while ($row = $result->fetch_assoc()) {
-                        echo '<option value="'.$row['id_taller'].'">'.$row['nombre'].'</option>';
-                    }
-                    ?>
-                </select>
-            </div>
+                        <!-- Select de talleres -->
+                        <div style="min-width: 180px;">
+                            <select class="form-select" id="filtroTaller" name="filtroTaller">
+                                <option value="">TODOS LOS TALLERES</option>
+                                <?php
+                                $query = "SELECT id_taller, nombre FROM tall_talleres";
+                                $result = $conn->query($query);
+                                while ($row = $result->fetch_assoc()) {
+                                    echo '<option value="'.$row['id_taller'].'">'.$row['nombre'].'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
 
-            <!-- Select de estado -->
-            <div style="min-width: 150px;">
-                <select class="form-select" id="filtroEstado" name="filtroEstado">
-                    <option value="">TODOS LOS ESTADOS</option>
-                    <option value="1">ACTIVOS</option>
-                    <option value="3">BAJA</option>
-                </select>
-            </div>
+                        <!-- Select de estado -->
+                        <div style="min-width: 150px;">
+                            <select class="form-select" id="filtroEstado" name="filtroEstado">
+                                <option value="">TODOS LOS ESTADOS</option>
+                                <option value="1">ACTIVOS</option>
+                                <option value="3">BAJA</option>
+                            </select>
+                        </div>
 
-            <!-- Select de tipo -->
-            <div style="min-width: 150px;">
-                <select class="form-select" id="filtroTipo" name="filtroTipo">
-                    <option value="">TODOS LOS TIPOS</option>
-                    <option value="1">INTERNOS</option>
-                    <option value="2">EXTERNOS</option>
-                </select>
-            </div>
+                        <!-- Select de tipo -->
+                        <div style="min-width: 150px;">
+                            <select class="form-select" id="filtroTipo" name="filtroTipo">
+                                <option value="">TODOS LOS TIPOS</option>
+                                <option value="1">INTERNOS</option>
+                                <option value="2">EXTERNOS</option>
+                            </select>
+                        </div>
 
-            <!-- Botones -->
-            <div class="d-flex gap-2" style="min-width: 240px;">
-                <button type="submit" class="btn btn-primary w-100" id="btnBuscar">
-                    <span id="searchText"><i class="bi bi-search"></i> Buscar</span>
-                    <span id="searchLoading" class="d-none">
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        Buscando...
-                    </span>
-                </button>
-                <button type="button" id="btnLimpiar" class="btn btn-secondary w-100">
-                    <i class="bi bi-eraser"></i> Limpiar
-                </button>
+                        <!-- Botones -->
+                        <div class="d-flex gap-2" style="min-width: 240px;">
+                            <button type="submit" class="btn btn-primary w-100" id="btnBuscar">
+                                <span id="searchText"><i class="bi bi-search"></i> Buscar</span>
+                                <span id="searchLoading" class="d-none">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    Buscando...
+                                </span>
+                            </button>
+                            <button type="button" id="btnLimpiar" class="btn btn-secondary w-100">
+                                <i class="bi bi-eraser"></i> Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </div>
-    </form>
-</div>
-
             
             <!-- Botón para generar PDF -->
             <div class="row mt-3">
@@ -165,7 +167,6 @@ require_once '../../../php/conexion.php';
 <!-- Modal para detalles -->
 <div class="modal fade" id="detalleModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="max-width: 60%;">
-
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">DETALLES DE INSCRIPCIÓN</h5>
@@ -175,13 +176,14 @@ require_once '../../../php/conexion.php';
                 <!-- Los detalles se cargarán aquí -->
             </div>
             <div class="modal-footer">
-    <button type="button" class="btn btn-danger" id="btnCancelarInscripcion" data-id="">Cancelar Inscripción</button>
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-</div>
+                <button type="button" class="btn btn-danger" id="btnCancelarInscripcion" data-id="">Cancelar Inscripción</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
         </div>
     </div>
 </div>
 
+<script src="../../js/sidebar.js"></script>
 <script src="js/consulta_inscripciones.js"></script>    
 
 <footer>
