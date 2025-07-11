@@ -1,0 +1,168 @@
+   .consulta-container {
+       background-color: #f8f9fa;
+       border-radius: 10px;
+       padding: 20px;
+       margin-bottom: 20px;
+       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   }
+
+   .filtros-section {
+       background-color: white;
+       border-radius: 5px;
+       padding: 15px;
+       margin-bottom: 15px;
+       /* border-left: 4px solid #0d6efd; */
+   }
+
+   .table-inscripciones {
+       width: 100%;
+   }
+
+   .table-inscripciones th {
+       background-color: #f1f1f1;
+       text-align: center;
+   }
+
+   .table-inscripciones td {
+       vertical-align: middle;
+   }
+
+   .btn-accion {
+       margin-right: 5px;
+   }
+
+
+/* Agregar al final del bloque de estilos */
+.table-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.table-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.badge.bg-success {
+    background-color: #198754 !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+
+/* Estilos para el modal de detalles */
+.modal-lg {
+    max-width: 80%;
+}
+
+
+.consulta-container {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.filtros-section {
+    background-color: white;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #0d6efd;
+}
+
+.table-mantenimientos {
+    width: 100%;
+}
+
+.table-mantenimientos th {
+    background-color: #f1f1f1;
+    text-align: center;
+}
+
+.table-mantenimientos td {
+    vertical-align: middle;
+}
+
+.btn-accion {
+    margin-right: 5px;
+}
+
+/* Estilos para estados */
+.table-success {
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+.badge.bg-success {
+    background-color: #198754 !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529;
+}
+
+/* Ajustes para dispositivos pequeños */
+@media (max-width: 768px) {
+
+    .filtros-section .col-md-3,
+    .filtros-section .col-md-2 {
+        margin-bottom: 10px;
+    }
+
+    .modal-lg {
+        max-width: 95%;
+    }
+}
+
+
+/* Añadir al final del archivo */
+
+/* Estilos para botones de acciones */
+.btn-detalle-equipos,
+.btn-generar-pdf {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.btn-generar-pdf {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-generar-pdf:hover {
+    background-color: #bb2d3b;
+    border-color: #b02a37;
+}
+
+/* Ajustes para tabla responsiva */
+@media (max-width: 1200px) {
+    .table-mantenimientos {
+        font-size: 0.9rem;
+    }
+
+    .btn-detalle-equipos,
+    .btn-generar-pdf {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 992px) {
+
+    .table-mantenimientos th,
+    .table-mantenimientos td {
+        padding: 0.3rem;
+    }
+}
